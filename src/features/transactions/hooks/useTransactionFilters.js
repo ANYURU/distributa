@@ -19,12 +19,9 @@ export function useTransactionFilters() {
       page: isNaN(page) ? DEFAULT_PAGE : page,
       pageSize: isNaN(pageSize) ? DEFAULT_PAGE_SIZE : pageSize,
       dates: {
-        issueFrom: searchParams.get("issueFrom") || null,
-        issueTo: searchParams.get("issueTo") || null,
-        dueFrom: searchParams.get("dueFrom") || null,
-        dueTo: searchParams.get("dueTo") || null,
+        from: searchParams.get("from") || null,
+        to: searchParams.get("to") || null,
       },
-      startFrom: searchParams.get("startFrom") || null,
       status: searchParams.get("status") || null,
     };
   }, [searchParams]);
@@ -77,17 +74,13 @@ export function useTransactionFilters() {
       pageSize: DEFAULT_PAGE_SIZE,
       search: "",
       dates: {
-        issueFrom: null,
-        issueTo: null,
-        dueFrom: null,
-        dueTo: null,
+        from: null,
+        to: null,
       },
-      startFrom: null,
       status: null,
     });
   }, [applyFilters]);
 
-  // Check if any filters are active
   const hasActiveFilters = useMemo(() => {
     return Boolean(
       filters.search ||
