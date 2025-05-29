@@ -423,7 +423,137 @@ class Balances extends AppwriteService {
       throw new Error(`Failed to get current balance: ${error.message}`);
     }
   }
+
+  /**
+   * Revert balance updates if transaction creation fails
+   * This method undoes the changes made by updateBalances
+   */
+  async revertBalanceUpdate(amount, flow_type, date, categoryId = null) {
+    try {
+      const balancesPromises = [
+        this.initializeUserBalance(),
+        this.getOrCreateMonthlyBalance(date),
+      ];
+
+      if (categoryId) {
+        balancesPromises.push(
+          this.database.getDocument(
+            this.#databaseId,
+            this.#categoriesCollectionId,
+            categoryId
+          )
+        );
+      }
+
+      const [userBalance, monthlyBalance] = await Promise.all(balancesPromises);
+
+      const updatePromises = [
+        this.database.updateDocument(
+          this.#databaseId,
+          this.#accountSummariesCollectionId,
+          userBalance.$id,
+          {
+            total_income:
+              flow_type === "income"
+                ? userBalance.total_income - amount
+                : userBalance.total_income,
+            total_expenses:
+              flow_type === "expense"
+                ? userBalance.total_expenses - amount
+                : userBalance.total_expenses,
+            current_balance:
+              flow_type === "income"
+                ? userBalance.current_balance - amount
+                : userBalance.current_balance + amount,
+          }
+        ),
+
+        this.database.updateDocument(
+          this.#databaseId,
+          this.#monthlyStatementsCollectionId,
+          monthlyBalance.$id,
+          {
+            income:
+              flow_type === "income"
+                ? monthlyBalance.income - amount
+                : monthlyBalance.income,
+            expense:
+              flow_type === "expense"
+                ? monthlyBalance.expense - amount
+                : monthlyBalance.expense,
+            number_of_transactions: Math.max(
+              0,
+              monthlyBalance.number_of_transactions - 1
+            ),
+            // Recalculate average if there are still transactions
+            average_transaction_amount:
+              monthlyBalance.number_of_transactions > 1
+                ? (monthlyBalance.average_transaction_amount *
+                    monthlyBalance.number_of_transactions -
+                    amount) /
+                  (monthlyBalance.number_of_transactions - 1)
+                : 0,
+            budget_utilised:
+              flow_type === "expense"
+                ? monthlyBalance.budget_utilised - amount
+                : monthlyBalance.budget_utilised,
+          }
+        ),
+      ];
+
+      if (categoryId) {
+        // Get the current category total
+        const categoryTotal = await this.database.listDocuments(
+          this.#databaseId,
+          this.#monthlyCategoryTotalsCollectionId,
+          [
+            Query.equal("monthly_statement_id", monthlyBalance.$id),
+            Query.equal("category_id", categoryId),
+          ]
+        );
+
+        if (categoryTotal.total > 0) {
+          const currentTotal = categoryTotal.documents[0];
+          const newAmount = currentTotal.amount - amount;
+
+          // If the new amount would be zero or negative, delete the record
+          if (newAmount <= 0) {
+            updatePromises.push(
+              this.database.deleteDocument(
+                this.#databaseId,
+                this.#monthlyCategoryTotalsCollectionId,
+                currentTotal.$id
+              )
+            );
+          } else {
+            // Otherwise update with the new amount
+            updatePromises.push(
+              this.database.updateDocument(
+                this.#databaseId,
+                this.#monthlyCategoryTotalsCollectionId,
+                currentTotal.$id,
+                {
+                  amount: newAmount,
+                }
+              )
+            );
+          }
+        }
+      }
+
+      const [updatedUserBalance, updatedMonthlyBalance] = await Promise.all(
+        updatePromises
+      );
+
+      return {
+        userBalance: updatedUserBalance,
+        monthlyBalance: updatedMonthlyBalance,
+      };
+    } catch (error) {
+      throw new Error(`Failed to revert balance updates: ${error.message}`);
+    }
+  }
 }
 
-const BalancesService = new Balances();
-export default BalancesService;
+const balancesService = new Balances();
+export default balancesService;
