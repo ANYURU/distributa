@@ -4,6 +4,8 @@ import clsx from "clsx";
 import { selectStyles } from "./selectStyles";
 import { DropdownIndicator, LoadingMessage } from "./selectComponents";
 import { useEffect, useState } from "react";
+import Button from "./Button";
+import { FiPlus } from "react-icons/fi";
 
 const CustomAsyncSelect = ({
   label,
@@ -12,6 +14,7 @@ const CustomAsyncSelect = ({
   cacheOptions = true,
   disabled,
   handleChange,
+  onCreateOption = null,
   isClearable = false,
   isSearchable = true,
   placeholder = "Search...",
@@ -89,59 +92,74 @@ const CustomAsyncSelect = ({
           {label}
         </label>
       ) : null}
-      <AsyncSelect
-        {...field}
-        onChange={onChangeHandler}
-        loadOptions={loadOptions}
-        defaultOptions={defaultOptions}
-        cacheOptions={cacheOptions}
-        closeMenuOnSelect={true}
-        isClearable={isClearable}
-        isDisabled={disabled}
-        isSearchable={isSearchable}
-        debounceTimeout={debounceTimeout}
-        getOptionValue={getOptionValue}
-        value={selectedOption}
-        unstyled
-        placeholder={placeholder}
-        styles={reactSelectStyles}
-        components={{
-          DropdownIndicator,
-          LoadingMessage,
-        }}
-        classNames={{
-          control: ({ isFocused }) =>
-            clsx(
-              isFocused ? controlStyles.focus : controlStyles.nonFocus,
-              controlStyles.base,
-              meta.touched && meta.error
-                ? "border border-error focus:border-error"
-                : "border border-greyborder focus:border-grey"
-            ),
-          menuStyles: () => menuStyles,
-          menuList: () => menuListStyles,
-          placeholder: () => placeholderStyles,
-          input: () => selectInputStyles,
-          valueContainer: () => valueContainerStyles,
-          singleValue: () => singleValueStyles,
-          multiValue: () => multiValueStyles,
-          multiValueLabel: () => multiValueLabelStyles,
-          multiValueRemove: () => multiValueRemoveStyles,
-          indicatorsContainer: () => indicatorsContainerStyles,
-          clearIndicator: () => clearIndicatorStyles,
-          indicatorSeparator: () => indicatorSeparatorStyles,
-          dropdownIndicator: () => dropdownIndicatorStyles,
-          menu: () => menuStyles,
-          groupHeading: () => groupHeadingStyles,
-          option: ({ isFocused, isSelected }) =>
-            clsx(
-              isFocused && optionStyles.focus,
-              isSelected && optionStyles.selected,
-              optionStyles.base
-            ),
-          noOptionsMessage: () => noOptionsMessageStyles,
-        }}
-      />
+      <div className="flex flex-row h-fit">
+        <div className="w-full">
+          <AsyncSelect
+            {...field}
+            onChange={onChangeHandler}
+            loadOptions={loadOptions}
+            defaultOptions={defaultOptions}
+            cacheOptions={cacheOptions}
+            closeMenuOnSelect={true}
+            isClearable={isClearable}
+            isDisabled={disabled}
+            isSearchable={isSearchable}
+            debounceTimeout={debounceTimeout}
+            getOptionValue={getOptionValue}
+            value={selectedOption}
+            unstyled
+            placeholder={placeholder}
+            styles={reactSelectStyles}
+            components={{
+              DropdownIndicator,
+              LoadingMessage,
+            }}
+            classNames={{
+              control: ({ isFocused }) =>
+                clsx(
+                  isFocused ? controlStyles.focus : controlStyles.nonFocus,
+                  controlStyles.base,
+                  meta.touched && meta.error
+                    ? "border border-error focus:border-error"
+                    : "border border-greyborder focus:border-grey"
+                ),
+              menuStyles: () => menuStyles,
+              menuList: () => menuListStyles,
+              placeholder: () => placeholderStyles,
+              input: () => selectInputStyles,
+              valueContainer: () => valueContainerStyles,
+              singleValue: () => singleValueStyles,
+              multiValue: () => multiValueStyles,
+              multiValueLabel: () => multiValueLabelStyles,
+              multiValueRemove: () => multiValueRemoveStyles,
+              indicatorsContainer: () => indicatorsContainerStyles,
+              clearIndicator: () => clearIndicatorStyles,
+              indicatorSeparator: () => indicatorSeparatorStyles,
+              dropdownIndicator: () => dropdownIndicatorStyles,
+              menu: () => menuStyles,
+              groupHeading: () => groupHeadingStyles,
+              option: ({ isFocused, isSelected }) =>
+                clsx(
+                  isFocused && optionStyles.focus,
+                  isSelected && optionStyles.selected,
+                  optionStyles.base
+                ),
+              noOptionsMessage: () => noOptionsMessageStyles,
+            }}
+          />
+        </div>
+        {onCreateOption && (
+          <Button
+            type="button"
+            className="font-medium p-3 h-full align-middle border-transparent text-black"
+            onClick={onCreateOption}
+            kind="plain"
+          >
+            <FiPlus />
+          </Button>
+        )}
+      </div>
+
       {touched && error ? (
         <div className="font-normal font-satoshi text-tiny tracking-normal leading-150 text-error">
           {meta.error}
