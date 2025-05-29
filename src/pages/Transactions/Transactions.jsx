@@ -1,19 +1,202 @@
 import { ContentViewAreaWrapper } from "../../Layouts/components";
 import { Button } from "../../components/common/forms";
 import { Book } from "../../components/common/icons";
-import { useLoaderData, useLocation, Await } from "react-router-dom";
+import { useLoaderData, useLocation, useFetcher } from "react-router";
 import { CreateTransaction, TransactionDetails } from "../../components/Modals";
-import { useState, useCallback, useEffect, Suspense, useMemo } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  Suspense,
+  useMemo,
+  use,
+} from "react";
 import { groupBy, map, sumBy } from "lodash";
 import { format, parse } from "date-fns";
 import TransactionRow from "../../features/transactions/components/table/TransactionRow";
-import { appwrite } from "../../lib/appwrite";
-import { DATABASE_ID, TRANSACTIONS_COLLECTION_ID } from "../../data/constants";
 import formatCurrency from "../../utils/format.currency";
+import { useRealtime } from "../../hooks";
+import { useTransactionFilters } from "../../features/transactions/hooks/useTransactionFilters";
+import usePagination from "../../hooks/usePagination";
+import {
+  Pagination,
+  PageSizeSelector,
+} from "../../components/common/pagination";
+import { createSearchParams } from "../../features/transactions/utils/url-params";
+import { appwriteConfig } from "../../lib/appwrite/config";
+
+// New component to handle currency preferences promise
+function CurrencyDisplay({
+  currencyPromise,
+  amount,
+  prefix = "",
+  abbreviate = false,
+}) {
+  const currencyPreferences = use(currencyPromise);
+
+  return (
+    <h3 className="font-archivo font-normal text-xl leading-120 tracking-normal break-words whitespace-normal overflow-visible text-left">
+      {currencyPreferences?.preferredCurrency && amount !== "N/A"
+        ? formatCurrency(
+            amount,
+            currencyPreferences.preferredCurrency,
+            prefix,
+            abbreviate
+          )
+        : amount}
+    </h3>
+  );
+}
+
+function Footer({ transactionsPromise, paginationControls }) {
+  const transactions = use(transactionsPromise);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(transactions.total / paginationControls.pageSize)
+  );
+
+  const pagination = {
+    ...paginationControls,
+    totalPages: totalPages,
+    hasNextPage: paginationControls.currentPage < totalPages - 1,
+    hasPreviousPage: paginationControls.currentPage > 0,
+  };
+
+  return (
+    <div className="w-full flex flex-wrap items-center justify-between mt-4 gap-4">
+      <PageSizeSelector
+        pageSize={pagination.pageSize}
+        onPageSizeChange={pagination.onPageSizeChange}
+        pageSizeOptions={[10, 25, 50, 100]}
+        currentPage={pagination.currentPage}
+        totalItems={transactions.total}
+      />
+      <Pagination {...pagination} />
+    </div>
+  );
+}
+
+function TransactionCurrencyDisplay({ currencyPromise, netBalance, prefix }) {
+  const currencyPreferences = use(currencyPromise);
+
+  return (
+    <h6 className="font-archivo font-normal text-tiny leading-150 tracking-normal">
+      {currencyPreferences?.preferredCurrency
+        ? formatCurrency(
+            netBalance,
+            currencyPreferences.preferredCurrency,
+            prefix
+          )
+        : `${prefix}${netBalance}`}
+    </h6>
+  );
+}
+
+function MonthlySummary({
+  summaryPromise,
+  currencyPromise,
+  toggleCreateTransactionModal,
+}) {
+  const data = use(summaryPromise);
+  const income = data?.income ?? "N/A";
+  const expense = data?.expense ?? "N/A";
+
+  return (
+    <div className="flex flex-col gap-y-2 lg:w-1/3">
+      <section className="flex flex-col gap-y-2 ">
+        <div className="flex gap-x-2">
+          <article className="flex flex-col gap-y-2 w-1/2 px-4 py-8 rounded-lg bg-grey justify-between">
+            <Suspense
+              fallback={
+                <h3 className="font-archivo font-normal text-xl leading-120 tracking-0 w-10 h-4 bg-gray-100 animate-pulse"></h3>
+              }
+            >
+              <CurrencyDisplay
+                currencyPromise={currencyPromise}
+                amount={income}
+                abbreviate={true}
+              />
+            </Suspense>
+            <p className="font-satoshi font-regular text-tiny leading-100 tracking-normal">
+              Income this month
+            </p>
+          </article>
+          <article className="flex flex-col gap-y-2 w-1/2 px-4 py-8 rounded-lg bg-grey">
+            <Suspense
+              fallback={
+                <h3 className="font-archivo font-normal text-xl leading-120 tracking-0 w-10 h-4 bg-gray-100 animate-pulse"></h3>
+              }
+            >
+              <CurrencyDisplay
+                currencyPromise={currencyPromise}
+                amount={expense}
+                abbreviate={true}
+              />
+            </Suspense>
+            <p className="font-satoshi font-regular text-tiny leading-100 tracking-normal">
+              Expenses this month
+            </p>
+          </article>
+        </div>
+        <Button
+          type="button"
+          className="w-full px-6 py-3 font-bold text-small"
+          kind="plain"
+          disabled={!(income || expense)}
+          // Todo Implement the code that exports this into an income report for this month.
+        >
+          Export PDF Report
+        </Button>
+        <Button
+          type="button"
+          className="w-full px-6 py-3 font-bold text-small"
+          onClick={toggleCreateTransactionModal}
+        >
+          Add New
+        </Button>
+      </section>
+    </div>
+  );
+}
+
+function TransactionsMain({
+  transactionsPromise,
+  toggleCreateTransactionModal,
+}) {
+  const data = use(transactionsPromise);
+
+  if (data?.total > 0) {
+    return <TransactionList data={data.documents} />;
+  }
+
+  return (
+    <article className="flex flex-col items-center gap-y-4">
+      <div className="flex justify-center items-center rounded-full bg-grey w-24 h-24">
+        <Book variation="black" />
+      </div>
+      <div className="flex flex-col gap-y-2">
+        <h3 className="font-archivo font-normal text-xl leading-120 tracking-normal text-center">
+          No Transactions
+        </h3>
+        <p className="font-satoshi font-normal text-medium leading-150 tracking-normal text-center">
+          You haven't created any transaction yet.
+        </p>
+      </div>
+      <Button
+        className="w-fit px-12 py-3 font-bold text-medium"
+        onClick={toggleCreateTransactionModal}
+      >
+        Create Transaction
+      </Button>
+    </article>
+  );
+}
 
 const Transactions = () => {
   const loaderData = useLoaderData();
   const location = useLocation();
+  const fetcher = useFetcher();
 
   const [createTransaction, setCreateTransaction] = useState(false);
   const [showTransactionDetails, setShowTransactionDetails] = useState(false);
@@ -51,10 +234,6 @@ const Transactions = () => {
       (partyId && partyName) ||
       returnToTransaction === "true"
     ) {
-      if (window.history && window.history.replaceState) {
-        const newUrl = `${window.location.pathname}${window.location.hash}`;
-        window.history.replaceState({}, "", newUrl);
-      }
 
       if (categoryId && categoryName && categoryType) {
         setCategoryInfo(() => ({
@@ -74,6 +253,68 @@ const Transactions = () => {
       setCreateTransaction(true);
     }
   }, [location]);
+
+  const { filters, applyFilters } = useTransactionFilters();
+
+  const currentPath = location.pathname;
+
+  const pagination = useMemo(
+    () => ({
+      currentPage: filters.page,
+      pageSize: filters.pageSize,
+    }),
+    [filters.page, filters.pageSize]
+  );
+
+  const handlePageChange = useCallback(
+    (newPage) => applyFilters({ page: newPage }),
+    [applyFilters]
+  );
+
+  const handleSearchChange = useCallback(
+    (searchTerm) => applyFilters({ search: searchTerm, page: 0 }),
+    [applyFilters]
+  );
+
+  const handleDateChange = useCallback(({ from, to }) => {
+    applyFilters({ dates: { from, to } });
+  }, []);
+
+  const handlePageSizeChange = useCallback(
+    (newPageSize) => applyFilters({ pageSize: newPageSize, page: 0 }),
+    [applyFilters]
+  );
+
+  const getSearchParams = useCallback(() => {
+    return createSearchParams(filters);
+  }, [filters]);
+
+  useRealtime(appwriteConfig.collections.transactions, {
+    onCreated: () => {
+      fetcher.load(`${currentPath}?${getSearchParams()}`);
+    },
+    onUpdated: () => {
+      fetcher.load(`${currentPath}?${getSearchParams()}`);
+    },
+    onDeleted: () => {
+      const data = loaderData.transactions;
+      const newTotal = data.total - 1;
+      const newPages = Math.ceil(newTotal / pagination.pageSize);
+
+      if (pagination.currentPage >= newPages && newPages > 0) {
+        handlePageChange(newPages - 1);
+      } else {
+        fetcher.load(`${currentPath}?${getSearchParams()}`);
+      }
+    },
+  });
+
+  const paginationControls = usePagination({
+    pageSize: pagination.pageSize,
+    currentPage: pagination.currentPage,
+    onPageChange: handlePageChange,
+    onPageSizeChange: handlePageSizeChange,
+  });
 
   return (
     <ContentViewAreaWrapper>
@@ -105,96 +346,11 @@ const Transactions = () => {
               </div>
             }
           >
-            <Await resolve={loaderData?.currentMonthSummary}>
-              {(data) => {
-                const income =
-                  data?.total > 0 ? data.documents?.[0]?.income : "N/A";
-                const expense =
-                  data?.total > 0 ? data.documents?.[0]?.expense : "N/A";
-
-                return (
-                  <div className="flex flex-col gap-y-2 lg:w-1/3">
-                    <section className="flex flex-col gap-y-2">
-                      <div className="flex gap-x-2">
-                        <article className="flex flex-col gap-y-2 w-1/2 px-4 py-8 rounded-lg bg-grey">
-                          <Suspense
-                            fallback={
-                              <h3 className="font-archivo font-normal text-xl leading-120 tracking-0 w-10 h-4 bg-gray-100 animate-pulse"></h3>
-                            }
-                          >
-                            <Await resolve={loaderData?.currencyPreferences}>
-                              {(currencyPreferences) => {
-                                return (
-                                  <h3 className="font-archivo font-normal text-xl leading-120 tracking-0">
-                                    {currencyPreferences?.preferredCurrency &&
-                                    income !== "N/A"
-                                      ? formatCurrency(
-                                          income,
-                                          currencyPreferences.preferredCurrency,
-                                          "",
-                                          true
-                                        )
-                                      : income}
-                                  </h3>
-                                );
-                              }}
-                            </Await>
-                          </Suspense>
-                          <p className="font-satoshi font-regular text-tiny leading-100 tracking-normal">
-                            Income this month
-                          </p>
-                        </article>
-                        <article className="flex flex-col gap-y-2 w-1/2 px-4 py-8 rounded-lg bg-grey">
-                          <Suspense
-                            fallback={
-                              <h3 className="font-archivo font-normal text-xl leading-120 tracking-0 w-10 h-4 bg-gray-100 animate-pulse"></h3>
-                            }
-                          >
-                            <Await resolve={loaderData?.currencyPreferences}>
-                              {(currencyPreferences) => {
-                                return (
-                                  <h3 className="font-archivo font-normal text-xl leading-120 tracking-0">
-                                    {currencyPreferences?.preferredCurrency &&
-                                    expense !== "N/A"
-                                      ? formatCurrency(
-                                          expense,
-                                          currencyPreferences.preferredCurrency,
-                                          "",
-                                          true
-                                        )
-                                      : expense}
-                                  </h3>
-                                );
-                              }}
-                            </Await>
-                          </Suspense>
-                          <p className="font-satoshi font-regular text-tiny leading-100 tracking-normal">
-                            Expenses this month
-                          </p>
-                        </article>
-                      </div>
-                      <Button
-                        type="button"
-                        className="w-full px-6 py-3 font-bold text-small"
-                        kind="plain"
-                        disabled={!(income || expense)}
-                        // Todo Implement the code that exports this into an income report for this month.
-                      >
-                        Export PDF Report
-                      </Button>
-                      <Button
-                        type="button"
-                        className="w-full px-6 py-3 font-bold text-small"
-                        onClick={toggleCreateTransactionModal}
-                        // disabled
-                      >
-                        Add New
-                      </Button>
-                    </section>
-                  </div>
-                );
-              }}
-            </Await>
+            <MonthlySummary
+              summaryPromise={loaderData.currentMonthSummary}
+              currencyPromise={loaderData.currencyPreferences}
+              toggleCreateTransactionModal={toggleCreateTransactionModal}
+            />
           </Suspense>
 
           <hr className="invisible h-8 lg:hidden" />
@@ -211,37 +367,34 @@ const Transactions = () => {
                 </ul>
               }
             >
-              <Await resolve={loaderData?.transactions}>
-                {(data) => {
-                  if (data?.total > 0)
-                    return <TransactionList data={data.documents} />;
-
-                  return (
-                    <article className="flex flex-col items-center gap-y-4">
-                      <div className="flex justify-center items-center rounded-full bg-grey w-24 h-24">
-                        <Book variation="black" />
-                      </div>
-                      <div className="flex flex-col gap-y-2">
-                        <h3 className="font-archivo font-normal text-xl leading-120 tracking-normal text-center">
-                          No Transactions
-                        </h3>
-                        <p className="font-satoshi font-normal text-medium leading-150 tracking-normal text-center">
-                          You haven't created any transaction yet.
-                        </p>
-                      </div>
-                      <Button
-                        className="w-fit px-12 py-3 font-bold text-medium"
-                        onClick={toggleCreateTransactionModal}
-                      >
-                        Create Transaction
-                      </Button>
-                    </article>
-                  );
-                }}
-              </Await>
+              <TransactionsMain
+                transactionsPromise={
+                  fetcher.data?.transactions || loaderData.transactions
+                }
+                toggleCreateTransactionModal={toggleCreateTransactionModal}
+              />
             </Suspense>
           </main>
         </div>
+        <Suspense
+          fallback={
+            <div className="flex gap-x-2">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="h-4 w-4 bg-grey animate-pulse rounded-lg"
+                ></div>
+              ))}
+            </div>
+          }
+        >
+          <Footer
+            transactionsPromise={
+              fetcher.data?.transactions || loaderData.transactions
+            }
+            paginationControls={paginationControls}
+          />
+        </Suspense>
       </section>
       {createTransaction && (
         <CreateTransaction
@@ -264,11 +417,10 @@ const Transactions = () => {
 };
 
 function TransactionList({ data }) {
-  const [transactions, setTransactions] = useState(data);
   const loaderData = useLoaderData();
 
   const transactionList = useMemo(() => {
-    const grouped = groupBy(transactions, (transaction) =>
+    const grouped = groupBy(data, (transaction) =>
       format(transaction.date, "yyyy-MM-dd")
     );
 
@@ -276,7 +428,7 @@ function TransactionList({ data }) {
       date,
       transactions: groupedTransactions || [],
     }));
-  }, [transactions]);
+  }, [data]);
 
   const formatDateString = useCallback((dateString) => {
     const date = parse(dateString, "yyyy-MM-dd", new Date());
@@ -299,56 +451,6 @@ function TransactionList({ data }) {
 
   const getPrefix = useCallback((amount) => (amount < 0 ? "-" : "+"), []);
 
-  const handleCreate = useCallback((transaction) => {
-    setTransactions((transactions) => [transaction, ...transactions]);
-  }, []);
-
-  const handleUpdate = useCallback((updatedTransaction) => {
-    setTransactions((transactions) =>
-      transactions.map((transaction) => {
-        if (transaction.$id === updatedTransaction.$id) {
-          return updatedTransaction;
-        }
-        return transaction;
-      })
-    );
-  }, []);
-
-  const handleDelete = useCallback((transactionId) => {
-    setTransactions((transactions) =>
-      transactions.filter((transaction) => transaction.$id !== transactionId)
-    );
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = appwrite.client.subscribe(
-      `databases.${DATABASE_ID}.collections.${TRANSACTIONS_COLLECTION_ID}.documents`,
-      (response) => {
-        if (
-          response.events.includes(
-            "databases.*.collections.*.documents.*.create"
-          )
-        ) {
-          handleCreate(response.payload);
-        } else if (
-          response.events.includes(
-            "databases.*.collections.*.documents.*.update"
-          )
-        ) {
-          handleUpdate(response.payload);
-        } else if (
-          response.events.includes(
-            "databases.*.collections.*.documents.*.delete"
-          )
-        ) {
-          handleDelete(response.payload.$id);
-        }
-      }
-    );
-
-    return () => unsubscribe();
-  }, []);
-
   return (
     <ul className="flex flex-col h-full w-full  gap-y-4 bg-white">
       {transactionList.map(({ date, transactions }) => {
@@ -369,21 +471,11 @@ function TransactionList({ data }) {
                   <h6 className="font-archivo font-normal text-tiny leading-150 tracking-normal w-20 h-3 bg-gray-100 animate-pulse"></h6>
                 }
               >
-                <Await resolve={loaderData?.currencyPreferences}>
-                  {(currencyPreferences) => {
-                    return (
-                      <h6 className="font-archivo font-normal text-tiny leading-150 tracking-normal">
-                        {currencyPreferences?.preferredCurrency
-                          ? formatCurrency(
-                              netBalance,
-                              currencyPreferences?.preferredCurrency,
-                              prefix
-                            )
-                          : `${prefix}${netBalance}`}
-                      </h6>
-                    );
-                  }}
-                </Await>
+                <TransactionCurrencyDisplay
+                  currencyPromise={loaderData.currencyPreferences}
+                  netBalance={netBalance}
+                  prefix={prefix}
+                />
               </Suspense>
             </header>
             <table className="w-full">
