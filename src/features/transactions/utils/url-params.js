@@ -14,10 +14,8 @@ export const parseSearchParams = (searchParams) => {
 export const parseDateParams = (searchParams) => {
   const dates = {};
   const dateFields = {
-    issueFrom: "issueFrom",
-    issueTo: "issueTo",
-    dueFrom: "dueFrom",
-    dueTo: "dueTo",
+    from: "from",
+    to: "to",
   };
 
   Object.entries(dateFields).forEach(([key, param]) => {
@@ -28,7 +26,7 @@ export const parseDateParams = (searchParams) => {
   return Object.keys(dates).length ? { dates } : {};
 };
 
-export const parseInvoiceParams = (searchParams) => ({
+export const parseTransactionParams = (searchParams) => ({
   ...parseSearchParams(searchParams),
   ...parseDateParams(searchParams),
   status: searchParams.get("status") || "",
@@ -44,10 +42,8 @@ export const createSearchParams = (filters = {}) => {
 
   const dates = filters.dates || {};
 
-  if (dates?.dueFrom) params.set("dueFrom", dates.dueFrom);
-  if (dates?.dueTo) params.set("dueTo", dates.dueTo);
-  if (dates?.issueFrom) params.set("issueFrom", dates.issueFrom);
-  if (dates?.issueTo) params.set("issueTo", dates.issueTo);
+  if (dates?.from) params.set("from", dates.from);
+  if (dates?.to) params.set("to", dates.to);
 
   return params;
 };
