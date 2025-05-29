@@ -1,7 +1,6 @@
 import { CircleX } from "../common/icons";
 import { createPortal } from "react-dom";
 import TransactionForm from "../Forms/TransactionForm";
-import { useEffect } from "react";
 import { useTransactionSubmission } from "../../features/transactions/hooks/useTransactionSubmission";
 
 const CreateTransaction = ({
@@ -11,23 +10,6 @@ const CreateTransaction = ({
 }) => {
   const { isLoading: isSubmitting, submitTransaction } =
     useTransactionSubmission(handleClose);
-
-  useEffect(() => {
-    try {
-      const testKey = "_test_localStorage_";
-      localStorage.setItem(testKey, "test");
-      const testValue = localStorage.getItem(testKey);
-      localStorage.removeItem(testKey);
-
-      if (testValue !== "test") {
-        setLocalStorageAvailable(false);
-        console.error("localStorage doesn't appear to be working properly");
-      }
-    } catch (error) {
-      setLocalStorageAvailable(false);
-      console.error("localStorage is not available:", error);
-    }
-  }, []);
 
   const handleSubmit = async (values) => {
     values.amount = parseFloat(values.amount);
