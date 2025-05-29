@@ -1,7 +1,6 @@
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef, useMemo } from "react";
 import { AsyncSelect } from ".";
 import { useFormikContext } from "formik";
-import { Button } from ".";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Query } from "appwrite";
 import { appwriteConfig } from "../../../lib/appwrite/config";
@@ -11,12 +10,17 @@ const FORM_STATE_KEY = "transaction_form_state";
 
 const CategorySelect = (props) => {
   const formikContext = useFormikContext();
-  const { values, setFieldValue } = formikContext;
+  const { values, setFieldValue, setValues } = formikContext;
+  const formValuesRef = useRef(formikContext.values);
   const navigate = useNavigate();
   const location = useLocation();
 
   const newCategoryIdRef = useRef(null);
   const [localStorageAvailable, setLocalStorageAvailable] = useState(true);
+
+  useEffect(() => {
+    formValuesRef.current = formikContext.values;
+  }, [formikContext.values]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -29,16 +33,16 @@ const CategorySelect = (props) => {
       if (localStorageAvailable) {
         try {
           const savedState = localStorage.getItem(FORM_STATE_KEY);
+          console.log("Saved transaction state: ", savedState);
+
           if (savedState) {
             const parsedState = JSON.parse(savedState);
 
-            Object.keys(parsedState).forEach((key) => {
-              if (key !== props.name) {
-                setFieldValue(key, parsedState[key]);
-              }
+            setValues({
+              ...formikContext.values,
+              ...parsedState,
+              [props.name]: categoryId,
             });
-
-            setFieldValue(props.name, categoryId);
 
             localStorage.removeItem(FORM_STATE_KEY);
           }
@@ -54,7 +58,6 @@ const CategorySelect = (props) => {
       }
     }
   }, [location, setFieldValue, props.name, localStorageAvailable]);
-
 
   useEffect(() => {
     try {
@@ -101,36 +104,13 @@ const CategorySelect = (props) => {
     }
 
     try {
-      localStorage.setItem(
-        FORM_STATE_KEY,
-        JSON.stringify(formikContext.values)
-      );
+      const currentValues = formValuesRef.current;
+      localStorage.setItem(FORM_STATE_KEY, JSON.stringify(currentValues));
       navigate("/settings/categories?return_to_transaction=true");
     } catch (error) {
       console.error("Error saving form state:", error);
       navigate("/settings/categories?return_to_transaction=true");
     }
-  };
-
-  const lastOption = {
-    value: "new",
-    label: (
-      <div className="border-t border-t-[#CCCCCC] bg-white p-3">
-        <Button
-          type="button"
-          className="font-medium text-[0.5rem] px-2 h-4 py-0 align-middle border-transparent text-black"
-          onClick={handleNavigateToCategories}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-          kind="secondary"
-        >
-          Create Category
-        </Button>
-      </div>
-    ),
-    isDisabled: true,
   };
 
   const loadOptions = useCallback(
@@ -148,7 +128,6 @@ const CategorySelect = (props) => {
         if (inputValue) {
           queries.push(Query.contains("name", inputValue));
         }
-
 
         if (values.flow_type === "income") {
           queries.push(Query.equal("type", ["income", "both"]));
@@ -192,13 +171,18 @@ const CategorySelect = (props) => {
           }
         }
 
-        return [...options, lastOption];
+        return [...options];
       } catch (error) {
         console.error("Error loading options:", error);
-        return [lastOption];
+        return [];
       }
     },
-    [values.flow_type, groupCategoryByType, props.name, setFieldValue]
+    [
+      values.flow_type,
+      groupCategoryByType,
+      props.name,
+      setFieldValue,
+    ]
   );
 
   const handleChange = (selectedOption) => {
@@ -216,6 +200,7 @@ const CategorySelect = (props) => {
       loadOptions={loadOptions}
       defaultOptions={true}
       cacheOptions={false}
+      onCreateOption={handleNavigateToCategories}
       {...props}
     />
   );
