@@ -11,12 +11,17 @@ const FORM_STATE_KEY = "transaction_form_state";
 
 const PartySelect = (props) => {
   const formikContext = useFormikContext();
+  const formValuesRef = useRef(formikContext.values);
   const { setFieldValue } = formikContext;
   const navigate = useNavigate();
   const location = useLocation();
 
   const newPartyIdRef = useRef(null);
   const [localStorageAvailable, setLocalStorageAvailable] = useState(true);
+
+  useEffect(() => {
+    formValuesRef.current = formikContext.values;
+  }, [formikContext.values]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -99,27 +104,6 @@ const PartySelect = (props) => {
     }
   };
 
-  const lastOption = {
-    value: "new",
-    label: (
-      <div className="border-t border-t-[#CCCCCC] bg-white p-3">
-        <Button
-          type="button"
-          className="font-medium text-[0.5rem] px-2 h-4 py-0 align-middle border-transparent text-black"
-          onClick={handleNavigateToParties}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-          kind="secondary"
-        >
-          Create Party
-        </Button>
-      </div>
-    ),
-    isDisabled: true,
-  };
-
   const loadOptions = useCallback(async (inputValue) => {
     const currentPartyId = newPartyIdRef.current;
 
@@ -147,12 +131,12 @@ const PartySelect = (props) => {
       );
 
       if (response?.total > 0) {
-        return [...response.documents.map(generateOption), lastOption];
+        return [...response.documents.map(generateOption)];
       }
 
-      return [lastOption];
+      return [];
     } catch (error) {
-      return [lastOption];
+      return [];
     }
   }, []);
 
@@ -171,6 +155,7 @@ const PartySelect = (props) => {
       loadOptions={loadOptions}
       defaultOptions={true}
       cacheOptions={false}
+      onCreateOption={handleNavigateToParties}
       {...props}
     />
   );
