@@ -1,6 +1,6 @@
 import AppwriteService from "./appwrite.service.js";
 import InvoiceService from "./invoice.service";
-import TransactionService from "./transaction.service";
+import TransactionService from "../features/transactions/services/transaction.service.js";
 import BalancesService from "./balances.service";
 import CategoryService from "./categories.service";
 import ShareInvoiceService from "./sharesInvoice.service";
