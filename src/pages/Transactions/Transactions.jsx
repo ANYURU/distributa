@@ -25,7 +25,6 @@ import {
 import { createSearchParams } from "../../features/transactions/utils/url-params";
 import { appwriteConfig } from "../../lib/appwrite/config";
 
-// New component to handle currency preferences promise
 function CurrencyDisplay({
   currencyPromise,
   amount,
