@@ -1,6 +1,6 @@
 import { Formik, Form } from "formik";
 import { createTransactionSchema } from "../../utils/validators";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import cn from "../../utils/cn";
 
 import {
@@ -51,8 +51,8 @@ const TransactionForm = ({
   categoryInfo = null,
   partyInfo = null,
 }) => {
+
   const defaultInitialValues = {
-    $id: null,
     flow_type: "expense",
     date: new Date().toISOString().split("T")[0],
     item: "",
