@@ -65,6 +65,7 @@ export function useTransactionSubmission(handleClose = null) {
 
   const submitTransaction = useMemo(
     () => (data) => {
+      console.log("Submitting transaction:", data);
       transactionFetcher.submit(JSON.stringify(data), {
         method: "post",
         action: `/${parentPath}/new`,
