@@ -7,14 +7,18 @@ import { useTransactionFilters } from "./useTransactionFilters";
 import { createSearchParams } from "../utils/url-params";
 
 export function useTransactions() {
-  const [isCreating, setCreate] = useState(false);
+  const [createTransaction, setCreateTransaction] = useState(false);
+  const [showTransactionDetails, setShowTransactionDetails] = useState(false);
+  const [transactionDetails, setTransactionDetails] = useState(null);
+  const [categoryInfo, setCategoryInfo] = useState(null);
+  const [partyInfo, setPartyInfo] = useState(null);
+
   const { filters, applyFilters } = useTransactionFilters();
   const location = useLocation();
 
   const fetcher = useFetcher();
 
-  let { transactions } = useLoaderData();
-  const { documents, total } = use(transactions);
+  const loaderData = useLoaderData();
 
   const currentPath = location.pathname;
 
@@ -50,9 +54,22 @@ export function useTransactions() {
     return createSearchParams(filters);
   }, [filters]);
 
-  const toggleCreate = useCallback(() => {
-    setCreate((prev) => !prev);
+  const toggleCreateTransactionModal = useCallback(() => {
+    setCreateTransaction((prev) => !prev);
+    if (createTransaction) setTransactionDetails(null);
+  }, [createTransaction]);
+
+  const toggleTransactionDetailsModal = useCallback((transaction) => {
+    setShowTransactionDetails((prev) => !prev);
   }, []);
+
+  const handleTransactionDetails = useCallback(
+    (transaction) => {
+      setTransactionDetails(transaction);
+      toggleTransactionDetailsModal();
+    },
+    [toggleTransactionDetailsModal]
+  );
 
   useRealtime(appwriteConfig.collections.transactions, {
     onCreated: () => {
@@ -74,7 +91,6 @@ export function useTransactions() {
   });
 
   const paginationControls = usePagination({
-    total,
     pageSize: pagination.pageSize,
     currentPage: pagination.currentPage,
     onPageChange: handlePageChange,
@@ -82,15 +98,24 @@ export function useTransactions() {
   });
 
   return {
-    transactions: documents,
+    transactions: fetcher?.data?.transactions || loaderData.transactions,
+    currencyPreferences: loaderData.currencyPreferences,
+    currentMonthSummary: loaderData.currentMonthSummary,
     isLoading: fetcher.state !== "idle",
     pagination: paginationControls,
-    total,
     filters,
+    createTransaction,
+    showTransactionDetails,
+    transactionDetails,
+    categoryInfo,
+    partyInfo,
     applyFilters,
     handleSearchChange,
     handleStartFromChange,
-    isCreating,
-    toggleCreate,
+    toggleCreateTransactionModal,
+    toggleTransactionDetailsModal,
+    handleTransactionDetails,
+    setCategoryInfo,
+    setPartyInfo,
   };
 }
