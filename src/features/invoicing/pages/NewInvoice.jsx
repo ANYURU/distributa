@@ -1,4 +1,3 @@
-import React from "react";
 import { useCreateInvoice } from "../hooks/useCreateInvoice";
 import InvoiceForm from "../components/InvoiceForm";
 import { newInvoiceSchema } from "../../../utils/validators";
