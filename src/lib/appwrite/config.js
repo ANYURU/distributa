@@ -82,7 +82,7 @@ export const appwriteConfig = {
     billingAddresses: import.meta.env
       .VITE_APPWRITE_BILLING_ADDRESS_COLLECTION_ID,
     items: import.meta.env.VITE_APPRWITE_ITEMS_COLLECTION_ID,
-    transactions: import.meta.env.VITE_APPWRITE_TRANSACTIONS_COLLECTION_ID,
+    transactions: import.meta.env.VITE_APPRWITE_TRANSACTIONS_COLLECTION_ID,
     monthlyStatements: import.meta.env
       .VITE_APPWRITE_MONTHLY_STATEMENTS_COLLECTION_ID,
     accountSummaries: import.meta.env
