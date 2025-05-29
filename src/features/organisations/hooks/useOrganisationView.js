@@ -13,27 +13,35 @@ export function useOrganisationView() {
   const actions = {
     updateDetails: useCallback(
       (data) => {
+        if (!organisation.$id) return;
+
         fetcher.submit(data, {
           method: "patch",
           action: `/settings/organisations/${organisation.$id}/edit`,
         });
       },
-      [fetcher, organisation.$id]
+      [fetcher, organisation]
     ),
     deleteOrganisation: useCallback(() => {
+      if (!organisation.$id) return;
+
       fetcher.submit(null, {
         method: "delete",
         action: `/settings/organisations/${organisation.$id}/delete`,
       });
-    }, [fetcher, organisation.$id]),
+    }, [fetcher, organisation]),
 
     navigateToEdit: useCallback(() => {
+      if (!organisation.$id) return;
+
       navigate(`/settings/organisations/${organisation.$id}/edit`);
-    }, [navigate, organisation.$id]),
+    }, [navigate, organisation]),
 
     navigateToView: useCallback(() => {
+      if (!organisation.$id) return;
+
       navigate(`/settings/organisations/${organisation.$id}`);
-    }, [navigate, organisation.$id]),
+    }, [navigate, organisation]),
 
     navigateToCreate: useCallback(() => {
       navigate("/settings/organisations/new");
