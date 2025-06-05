@@ -48,10 +48,7 @@ const TransactionForm = ({
   onSubmit,
   isSubmitting,
   submitButtonText = "Submit",
-  categoryInfo = null,
-  partyInfo = null,
 }) => {
-
   const defaultInitialValues = {
     flow_type: "expense",
     date: new Date().toISOString().split("T")[0],
@@ -70,13 +67,8 @@ const TransactionForm = ({
     return {
       ...defaultInitialValues,
       ...initialData,
-      category: categoryInfo ? categoryInfo.id : defaultInitialValues.category,
-      flow_type: categoryInfo
-        ? categoryInfo.type
-        : defaultInitialValues.flow_type,
-      payer_payee: partyInfo ? partyInfo.id : defaultInitialValues.payer_payee,
     };
-  }, [initialData, categoryInfo, partyInfo]);
+  }, [initialData]);
 
   return (
     <Formik
