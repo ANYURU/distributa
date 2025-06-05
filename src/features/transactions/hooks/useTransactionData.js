@@ -14,7 +14,7 @@ export function useTransactionData(initialTransactionData) {
       toast.success(fetcher.data.message);
 
       if (fetcher?.data?.invoice) {
-        setInvoice((prev) => ({ ...prev, ...fetcher.data.invoice }));
+        setTransaction((prev) => ({ ...prev, ...fetcher.data.invoice }));
       }
     } else if (
       (fetcher.state === "idle" || fetcher.state == "loading") &&
