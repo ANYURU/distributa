@@ -31,7 +31,7 @@ function MonthlySummary({
               Income this month
             </p>
           </article>
-          <article className="flex flex-col gap-y-2 w-1/2 px-4 py-8 rounded-lg bg-grey">
+          <article className="flex flex-col gap-y-2 w-1/2 px-4 py-8 rounded-lg bg-grey justify-between">
             <Suspense
               fallback={
                 <h3 className="font-archivo font-normal text-xl leading-120 tracking-0 w-10 h-4 bg-gray-100 animate-pulse"></h3>
