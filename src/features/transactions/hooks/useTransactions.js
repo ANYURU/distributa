@@ -1,5 +1,5 @@
 import { useFetcher, useLoaderData, useLocation } from "react-router-dom";
-import { use, useMemo, useCallback, useState } from "react";
+import { useMemo, useCallback, useState } from "react";
 import usePagination from "../../../hooks/usePagination";
 import { appwriteConfig } from "../../../lib/appwrite/config";
 import { useRealtime } from "../../../hooks";
@@ -10,8 +10,6 @@ export function useTransactions() {
   const [createTransaction, setCreateTransaction] = useState(false);
   const [showTransactionDetails, setShowTransactionDetails] = useState(false);
   const [transactionDetails, setTransactionDetails] = useState(null);
-  const [categoryInfo, setCategoryInfo] = useState(null);
-  const [partyInfo, setPartyInfo] = useState(null);
 
   const { filters, applyFilters } = useTransactionFilters();
   const location = useLocation();
@@ -55,7 +53,7 @@ export function useTransactions() {
   }, [filters]);
 
   const toggleCreateTransactionModal = useCallback(() => {
-    setCreateTransaction((prev) => !prev);
+    setCreateTransaction(!createTransaction);
     if (createTransaction) setTransactionDetails(null);
   }, [createTransaction]);
 
@@ -107,15 +105,11 @@ export function useTransactions() {
     createTransaction,
     showTransactionDetails,
     transactionDetails,
-    categoryInfo,
-    partyInfo,
     applyFilters,
     handleSearchChange,
     handleStartFromChange,
     toggleCreateTransactionModal,
     toggleTransactionDetailsModal,
     handleTransactionDetails,
-    setCategoryInfo,
-    setPartyInfo,
   };
 }
