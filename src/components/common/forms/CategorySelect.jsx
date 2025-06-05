@@ -33,7 +33,6 @@ const CategorySelect = (props) => {
       if (localStorageAvailable) {
         try {
           const savedState = localStorage.getItem(FORM_STATE_KEY);
-          console.log("Saved transaction state: ", savedState);
 
           if (savedState) {
             const parsedState = JSON.parse(savedState);
@@ -165,8 +164,14 @@ const CategorySelect = (props) => {
           );
 
           if (newCategoryOption) {
-            setFieldValue(props.name, currentCategoryId);
-            setFieldValue("flow_type", newCategoryOption.data.type);
+            setValues({
+              ...formValuesRef.current,
+              [props.name]: currentCategoryId,
+              flow_type:
+                newCategoryOption.data.type === "both"
+                  ? formValuesRef.current?.flow_type
+                  : newCategoryOption.data.type,
+            });
             newCategoryIdRef.current = null;
           }
         }
@@ -177,12 +182,7 @@ const CategorySelect = (props) => {
         return [];
       }
     },
-    [
-      values.flow_type,
-      groupCategoryByType,
-      props.name,
-      setFieldValue,
-    ]
+    [values.flow_type, groupCategoryByType, props.name, setFieldValue]
   );
 
   const handleChange = (selectedOption) => {
