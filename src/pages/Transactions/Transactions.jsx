@@ -21,12 +21,8 @@ const Transactions = () => {
     createTransaction,
     showTransactionDetails,
     transactionDetails,
-    categoryInfo,
-    partyInfo,
     toggleCreateTransactionModal,
     toggleTransactionDetailsModal,
-    setCategoryInfo,
-    setPartyInfo,
   } = useTransactions();
 
   const location = useLocation();
@@ -48,24 +44,9 @@ const Transactions = () => {
       (partyId && partyName) ||
       returnToTransaction === "true"
     ) {
-      if (categoryId && categoryName && categoryType) {
-        setCategoryInfo(() => ({
-          id: categoryId,
-          name: categoryName,
-          type: categoryType,
-        }));
-      }
-
-      if (partyId && partyName) {
-        setPartyInfo(() => ({
-          id: partyId,
-          name: partyName,
-        }));
-      }
-
       toggleCreateTransactionModal();
     }
-  }, [location, setCategoryInfo, setPartyInfo, toggleCreateTransactionModal]);
+  }, [location]);
 
   return (
     <ContentViewAreaWrapper>
@@ -102,11 +83,7 @@ const Transactions = () => {
         </Suspense>
       </section>
       {createTransaction && (
-        <CreateTransaction
-          handleClose={toggleCreateTransactionModal}
-          categoryInfo={categoryInfo}
-          partyInfo={partyInfo}
-        />
+        <CreateTransaction handleClose={toggleCreateTransactionModal} />
       )}
       {showTransactionDetails && transactionDetails && (
         <TransactionDetails
