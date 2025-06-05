@@ -3,11 +3,7 @@ import { createPortal } from "react-dom";
 import TransactionForm from "../Forms/TransactionForm";
 import { useTransactionSubmission } from "../../features/transactions/hooks/useTransactionSubmission";
 
-const CreateTransaction = ({
-  handleClose,
-  categoryInfo = null,
-  partyInfo = null,
-}) => {
+const CreateTransaction = ({ handleClose }) => {
   const { isLoading: isSubmitting, submitTransaction } =
     useTransactionSubmission(handleClose);
 
@@ -28,12 +24,7 @@ const CreateTransaction = ({
           </button>
         </header>
 
-        <TransactionForm
-          onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-          categoryInfo={categoryInfo}
-          partyInfo={partyInfo}
-        />
+        <TransactionForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
       </section>
     </main>,
     document.getElementById("portal")
