@@ -1,5 +1,4 @@
 import { useCallback, useState, useRef, useEffect } from "react";
-import { Button } from ".";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFormikContext } from "formik";
 import { AsyncSelect } from ".";
@@ -9,7 +8,7 @@ import { databases, account } from "../../../lib/appwrite/client";
 
 const FORM_STATE_KEY = "transaction_form_state";
 
-const PartySelect = (props) => {
+const PartySelect = ({ showCreateOption = false, ...props }) => {
   const formikContext = useFormikContext();
   const formValuesRef = useRef(formikContext.values);
   const { setFieldValue } = formikContext;
@@ -52,7 +51,6 @@ const PartySelect = (props) => {
         }
       }
 
-      // Clean up URL parameters
       if (window.history && window.history.replaceState) {
         const newUrl = `${window.location.pathname}${window.location.hash}`;
         window.history.replaceState({}, "", newUrl);
@@ -61,6 +59,8 @@ const PartySelect = (props) => {
   }, [location, setFieldValue, props.name, localStorageAvailable]);
 
   useEffect(() => {
+    if (!showCreateOption) return;
+
     try {
       const testKey = "_test_localStorage_";
       localStorage.setItem(testKey, "test");
@@ -75,7 +75,7 @@ const PartySelect = (props) => {
       setLocalStorageAvailable(false);
       console.error("localStorage is not available:", error);
     }
-  }, []);
+  }, [showCreateOption]);
 
   const generateOption = (option) => ({
     value: option.$id,
@@ -155,7 +155,7 @@ const PartySelect = (props) => {
       loadOptions={loadOptions}
       defaultOptions={true}
       cacheOptions={false}
-      onCreateOption={handleNavigateToParties}
+      onCreateOption={showCreateOption ? handleNavigateToParties : undefined}
       {...props}
     />
   );
