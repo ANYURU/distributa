@@ -8,7 +8,7 @@ import { databases } from "../../../lib/appwrite/client";
 
 const FORM_STATE_KEY = "transaction_form_state";
 
-const CategorySelect = (props) => {
+const CategorySelect = ({ showCreateOption = false, ...props }) => {
   const formikContext = useFormikContext();
   const { values, setFieldValue, setValues } = formikContext;
   const formValuesRef = useRef(formikContext.values);
@@ -59,6 +59,8 @@ const CategorySelect = (props) => {
   }, [location, setFieldValue, props.name, localStorageAvailable]);
 
   useEffect(() => {
+    if (!showCreateOption) return;
+
     try {
       const testKey = "_test_localStorage_";
       localStorage.setItem(testKey, "test");
@@ -73,7 +75,7 @@ const CategorySelect = (props) => {
       setLocalStorageAvailable(false);
       console.error("localStorage is not available:", error);
     }
-  }, []);
+  }, [showCreateOption]);
 
   const groupCategoryByType = useCallback((categories) => {
     return (categories || []).reduce((acc, category) => {
@@ -128,9 +130,9 @@ const CategorySelect = (props) => {
           queries.push(Query.contains("name", inputValue));
         }
 
-        if (values.flow_type === "income") {
+        if (formValuesRef.current?.flow_type === "income") {
           queries.push(Query.equal("type", ["income", "both"]));
-        } else if (values.flow_type === "expense") {
+        } else if (formValuesRef.current?.flow_type === "expense") {
           queries.push(Query.equal("type", ["expense", "both"]));
         }
 
@@ -148,14 +150,21 @@ const CategorySelect = (props) => {
 
         let options = [];
 
-        if (values.flow_type === "income") {
+        if (formValuesRef.current.flow_type === "income") {
           const bothOptions = groupedCategories.both || [];
           const incomeOptions = groupedCategories.income || [];
           options = [...bothOptions, ...incomeOptions].map(generateOption);
-        } else if (values.flow_type === "expense") {
+        } else if (formValuesRef.current.flow_type === "expense") {
           const bothOptions = groupedCategories.both || [];
           const expenseOptions = groupedCategories.expense || [];
           options = [...bothOptions, ...expenseOptions].map(generateOption);
+        } else {
+          const bothOptions = groupedCategories.both || [];
+          const expenseOptions = groupedCategories.expense || [];
+          const incomeOptions = groupedCategories.income || [];
+          options = [...bothOptions, ...expenseOptions, ...incomeOptions].map(
+            generateOption
+          );
         }
 
         if (currentCategoryId) {
@@ -200,7 +209,7 @@ const CategorySelect = (props) => {
       loadOptions={loadOptions}
       defaultOptions={true}
       cacheOptions={false}
-      onCreateOption={handleNavigateToCategories}
+      onCreateOption={showCreateOption ? handleNavigateToCategories : undefined}
       {...props}
     />
   );
