@@ -178,6 +178,7 @@ const TransactionForm = ({
               id="payer_payee"
               placeholder="Select Party"
               disabled={isSubmitting}
+              showCreateOption={true}
             />
 
             <TextField
@@ -205,6 +206,7 @@ const TransactionForm = ({
               id="category"
               placeholder="Select Category"
               disabled={isSubmitting}
+              showCreateOption={true}
             />
 
             <Button
