@@ -1,4 +1,4 @@
-# send email
+# send-email
 
 ## 🧰 Usage
 
