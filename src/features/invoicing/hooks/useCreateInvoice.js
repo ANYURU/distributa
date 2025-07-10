@@ -1,5 +1,3 @@
-import { useOrganisationView } from "../../organisations/hooks";
-import { useCurrencies } from "../../currencies/hooks/useCurrencies";
 import { useCallback } from "react";
 import { useFetcher, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
@@ -8,12 +6,10 @@ import {
   DEFAULT_PAGE_SIZE,
 } from "../../../data/constants/pagination";
 import { toast } from "react-toastify";
-import { useInvoices } from "./useInvoices";
+import { useLoaderData } from "react-router";
 
 export function useCreateInvoice() {
-  const { organisation } = useOrganisationView();
-  const { currencies: availableCurrencies } = useCurrencies();
-  const { total } = useInvoices();
+  const loaderData = useLoaderData();
 
   const fetcher = useFetcher();
   const navigate = useNavigate();
@@ -41,14 +37,14 @@ export function useCreateInvoice() {
           encType: "application/json",
         });
       },
-      [fetcher, organisation]
+      [fetcher, parentPath]
     ),
   };
-
+  
   return {
-    invoiceNumber: `INV-${total + 1}`,
-    organisation,
-    availableCurrencies,
+    organisation: loaderData.organisation,
+    currencies: loaderData.currencies,
+    invoices: loaderData.invoices,
     isLoading: fetcher.state === "submitting",
     actions,
   };
