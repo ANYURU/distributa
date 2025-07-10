@@ -66,7 +66,7 @@ export const createAmountRangeQueries = (
  */
 export const createSearchQueries = ({ search }, fields) => {
   if (search) {
-    const searchQueries = fields.map((field) => Query.equal(field, search));
+    const searchQueries = fields.map((field) => Query.contains(field, search));
     return [Query.or(searchQueries)];
   }
   return [];

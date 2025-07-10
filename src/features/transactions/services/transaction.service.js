@@ -2,12 +2,12 @@ import { BaseService } from "../../../lib/appwrite/base-service";
 import { appwriteConfig } from "../../../lib/appwrite/config";
 import { account } from "../../../lib/appwrite/client";
 import { Query, ID, Permission, Role } from "appwrite";
-
 class TransactionService extends BaseService {
   constructor() {
     super(appwriteConfig.collections.transactions, [
       "description",
       "flow_type",
+      "item",
     ]);
   }
 
@@ -69,11 +69,39 @@ class TransactionService extends BaseService {
 
     serviceQueries.push(Query.orderDesc("date"));
 
-    if (options.flow_type) {
+    if (options?.flow_type) {
       serviceQueries.push(Query.equal("flow_type", options.flow_type));
     }
 
-    return this.listDocuments(options, serviceQueries);
+    if (options?.status) {
+      serviceQueries.push(Query.equal("status", options.status));
+    }
+
+    if (options?.category) {
+      serviceQueries.push(Query.equal("category", options.category));
+    }
+
+    if (options?.contact) {
+      serviceQueries.push(Query.equal("contact", options.contact));
+    }
+
+    if (options.amount) {
+      const amount = parseFloat(options.amount);
+      if (!isNaN(amount)) {
+        serviceQueries.push(Query.equal("amount", amount));
+      }
+    }
+
+    const dateFilters = {};
+    if (options.dates?.from) {
+      dateFilters.startDate = options.dates.from;
+    }
+
+    if (options.dates?.to) {
+      dateFilters.endDate = options.dates.to;
+    }
+
+    return this.listDocuments({ ...options, ...dateFilters }, serviceQueries);
   }
 
   /**
