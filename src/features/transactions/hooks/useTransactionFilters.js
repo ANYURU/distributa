@@ -23,6 +23,10 @@ export function useTransactionFilters() {
         to: searchParams.get("to") || null,
       },
       status: searchParams.get("status") || null,
+      category: searchParams.get("category") || null,
+      flow_type: searchParams.get("flow_type") || null,
+      contact: searchParams.get("contact") || null,
+      amount: searchParams.get("amount") || null,
     };
   }, [searchParams]);
 
@@ -78,6 +82,10 @@ export function useTransactionFilters() {
         to: null,
       },
       status: null,
+      category: null,
+      flow_type: null,
+      contact: null,
+      amount: null,
     });
   }, [applyFilters]);
 
@@ -85,7 +93,10 @@ export function useTransactionFilters() {
     return Boolean(
       filters.search ||
         filters.status ||
-        filters.startFrom ||
+        filters.category ||
+        filters.flow_type ||
+        filters.contact ||
+        filters.amount ||
         Object.values(filters.dates).some(Boolean)
     );
   }, [filters]);
