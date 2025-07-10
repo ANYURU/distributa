@@ -52,9 +52,9 @@ class CurrencyService extends BaseService {
    */
   async #fetchAllDocuments(filters = {}, queries = []) {
     let allDocuments = [];
-    let currentPage = 1;
+    let currentPage = 0;
     let hasMore = true;
-    const limit = 100; // Maximum allowed by Appwrite
+    const limit = 100;
 
     while (hasMore) {
       const response = await this.listDocuments(
