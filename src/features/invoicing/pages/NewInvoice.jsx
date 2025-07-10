@@ -3,25 +3,10 @@ import InvoiceForm from "../components/InvoiceForm";
 import { newInvoiceSchema } from "../../../utils/validators";
 import { ContentViewAreaWrapper } from "../../../Layouts/components";
 import { formatInvoiceData } from "../utils/formatInvoiceData";
+import { Suspense } from "react";
 
 export const NewInvoicePage = () => {
-  const {
-    invoiceNumber,
-    organisation,
-    availableCurrencies,
-    isLoading,
-    actions,
-  } = useCreateInvoice();
-
-  const initialData = {
-    invoice_no: invoiceNumber,
-    billed_from: {
-      name: organisation?.name || "",
-      email: organisation?.email || "",
-      address: organisation?.address || "",
-    },
-    logo: organisation?.logo_url || null,
-  };
+  const { organisation, invoices, isLoading, actions } = useCreateInvoice();
 
   const handleSubmit = (values) => {
     const formattedValues = formatInvoiceData(values);
@@ -39,15 +24,17 @@ export const NewInvoicePage = () => {
         <hr className="invisible h-8" />
       </section>
       <main className="flex w-full flex-col h-fit gap-y-4 lg:pt-6">
-        <InvoiceForm
-          initialData={initialData}
-          onSubmit={handleSubmit}
-          isLoading={isLoading}
-          submitButtonText="Create Invoice"
-          availableCurrencies={availableCurrencies}
-          validationSchema={newInvoiceSchema}
-          mode="create"
-        />
+        <Suspense fallback={<div>Loading...</div>}>
+          <InvoiceForm
+            organisationPromise={organisation}
+            invoicesPromise={invoices}
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
+            submitButtonText="Create Invoice"
+            validationSchema={newInvoiceSchema}
+            mode="create"
+          />
+        </Suspense>
       </main>
     </ContentViewAreaWrapper>
   );
