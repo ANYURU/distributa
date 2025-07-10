@@ -1,13 +1,12 @@
 import { BaseService } from "../../../lib/appwrite/base-service";
 import { appwriteConfig } from "../../../lib/appwrite/config";
-import { account } from "../../../lib/appwrite/client";
+import { account, databases } from "../../../lib/appwrite/client";
 import { Permission, Role, Query } from "appwrite";
-import ItemService from "../../items/services/item.service";
+import { billingAddressService } from "../../billing/services/billing.service";
 
 class InvoiceService extends BaseService {
   constructor() {
     super(appwriteConfig.collections.invoices, ["title", "invoice_no"]);
-    this.itemService = new ItemService();
   }
 
   async createInvoice(payload) {
@@ -27,6 +26,8 @@ class InvoiceService extends BaseService {
   }
 
   async listInvoices(filters = {}) {
+    const { search: searchFilter, ...otherFilters } = filters;
+
     const queries = [
       ...(filters?.status ? [Query.equal("status", filters.status)] : []),
       ...(filters?.dates?.issueFrom
@@ -65,7 +66,40 @@ class InvoiceService extends BaseService {
       Query.orderDesc("$createdAt"),
     ];
 
-    return this.listDocuments(filters, queries);
+    if (searchFilter) {
+      const orQueries = [];
+
+      // if the search filter can be parsed to a number
+      const amountDue = parseFloat(searchFilter);
+      if (amountDue) orQueries.push(Query.equal("amount_due", amountDue));
+
+      try {
+        const billingAddresses =
+          await billingAddressService.searchBillingAddresses(
+            searchFilter,
+            true
+          );
+
+        const billedAddressIds = billingAddresses.map((billing) => billing.$id);
+
+        if (billedAddressIds && billedAddressIds?.length > 0) {
+          orQueries.push(Query.equal("billed_to", billedAddressIds));
+        }
+
+        this.searchFields.forEach((field) => {
+          orQueries.push(Query.contains(field, filters.search));
+        });
+
+        queries.push(Query.or(orQueries));
+      } catch (error) {
+        console.error(
+          "Error searching billing addresses for invoice filter: ",
+          error
+        );
+      }
+    }
+
+    return this.listDocuments(otherFilters, queries);
   }
 
   async updateInvoice(invoiceId, payload) {
