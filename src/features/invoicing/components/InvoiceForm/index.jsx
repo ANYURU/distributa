@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, use } from "react";
 import { Formik, Form } from "formik";
 import { newInvoiceSchema } from "../../../../utils/validators";
 import { Button } from "../../../../components/common/forms";
@@ -30,14 +30,25 @@ const MemoizedNotesAndTerms = React.memo(NotesAndTerms);
  * @returns {JSX.Element} Invoice form component
  */
 const InvoiceForm = ({
-  initialData,
+  initialData = {},
+  organisationPromise,
+  invoicesPromise,
   onSubmit,
   isLoading = false,
   submitButtonText = "Create Invoice",
-  availableCurrencies = [],
   validationSchema = newInvoiceSchema,
   mode = "create",
 }) => {
+  const organisation = organisationPromise ? use(organisationPromise) : null;
+  const invoices = invoicesPromise ? use(invoicesPromise) : null;
+
+  const invoice_no = useMemo(() => {
+    if (mode === "create" && invoices?.total !== undefined) {
+      return `INV-${invoices.total + 1}`;
+    }
+    return "";
+  }, [mode, invoices?.total]);
+
   // check if the screen is Desktop
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
@@ -101,18 +112,24 @@ const InvoiceForm = ({
     terms: "",
   };
 
-  // Merge default values with provided initial data
-  const formInitialValues = useMemo(
+  const initialValues = useMemo(
     () => ({
       ...defaultInitialValues,
+      billed_from: {
+        name: organisation?.name || "",
+        email: organisation?.email || "",
+        address: organisation?.address || "",
+      },
+      logo: organisation?.logo_url || null,
+      invoice_no: mode === "create" ? invoice_no : initialData.invoice_no || "",
       ...initialData,
     }),
-    [initialData]
+    [organisation, initialData]
   );
 
   return (
     <Formik
-      initialValues={formInitialValues}
+      initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
       enableReinitialize
@@ -122,7 +139,6 @@ const InvoiceForm = ({
           <InvoiceHeader
             paperSizeOptions={paperSizeOptions}
             orientationOptions={orientationOptions}
-            currencies={availableCurrencies}
             submitButtonText={submitButtonText}
             isLoading={isLoading}
           />
