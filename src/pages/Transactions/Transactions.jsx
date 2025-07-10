@@ -11,6 +11,7 @@ import {
   TransactionsMain,
   TransactionsMainSkeleton,
 } from "../../features/transactions/components";
+import { TransactionFilters } from "../../features/transactions/components/TransactionFilters";
 
 const Transactions = () => {
   const {
@@ -56,6 +57,7 @@ const Transactions = () => {
             My Transactions
           </h1>
           <hr className="invisible h-8" />
+          <TransactionFilters />
         </header>
         <div className="flex-1 flex flex-col lg:flex-row-reverse md:gap-x-4">
           <Suspense fallback={<MonthlySummarySkeleton />}>
