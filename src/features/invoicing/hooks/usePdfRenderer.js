@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 // Define PDF.js worker version - must match the version used by @react-pdf-viewer/core
-const PDFJS_VERSION = "3.4.120";
+// const PDFJS_VERSION = "3.4.120";
 
 // Create a worker source outside component to persist during HMR
 let globalWorkerSrc = null;
@@ -57,12 +57,8 @@ export const usePdfRenderer = () => {
 
     const loadWorker = async () => {
       try {
-        // console.log(
-        //   `Worker initialization attempt ${workerInitAttempts.current}`
-        // );
-
-        // Try to use the CDN worker directly for better HMR compatibility
-        const cdnWorkerUrl = `https://unpkg.com/pdfjs-dist@${PDFJS_VERSION}/build/pdf.worker.min.js`;
+        // const cdnWorkerUrl = `https://unpkg.com/pdfjs-dist@${PDFJS_VERSION}/build/pdf.worker.min.js`;
+        const cdnWorkerUrl = "/pdf.worker.min.js";
 
         // For production, you might want to check for a local worker first
         // but for development with HMR, using CDN is more reliable
@@ -130,8 +126,8 @@ export const usePdfRenderer = () => {
       message: error.message,
       action: {
         label: "Switch to HTML Preview",
-        handler: "preview"
-      }
+        handler: "preview",
+      },
     };
   };
 
