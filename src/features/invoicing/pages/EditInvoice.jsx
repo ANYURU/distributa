@@ -1,4 +1,3 @@
-import React from "react";
 import { useInvoiceView } from "../hooks";
 import InvoiceForm from "../components/InvoiceForm";
 import { ContentViewAreaWrapper } from "../../../Layouts/components";
