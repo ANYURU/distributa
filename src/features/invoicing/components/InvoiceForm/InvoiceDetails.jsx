@@ -1,4 +1,3 @@
-import React from "react";
 import { FormikTextField } from "../../../../components/common/forms/FormikFields";
 
 const InvoiceDetails = () => {
