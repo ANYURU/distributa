@@ -1,0 +1,766 @@
+.
+├── README.md
+├── appwrite
+│   ├── appwrite.json
+│   ├── config
+│   │   ├── buckets
+│   │   │   ├── avatars.js
+│   │   │   └── logos.js
+│   │   ├── collections
+│   │   │   ├── account-summaries.js
+│   │   │   ├── billing-address.js
+│   │   │   ├── categories.js
+│   │   │   ├── currency-preferences.js
+│   │   │   ├── distributions.js
+│   │   │   ├── invoice.js
+│   │   │   ├── monthly-category-totals.js
+│   │   │   ├── monthly-statement.js
+│   │   │   ├── organisation.js
+│   │   │   ├── parties.js
+│   │   │   ├── profile.js
+│   │   │   ├── shared-invoices.js
+│   │   │   └── transactions.js
+│   │   ├── functions
+│   │   │   └── send-email.js
+│   │   └── teams
+│   │       └── system-team.js
+│   ├── docker-compose.yml
+│   ├── docker-compose.yml.1748254834.backup
+│   ├── environments.txt
+│   ├── functions
+│   │   └── send-email
+│   │       ├── README.md
+│   │       ├── package-lock.json
+│   │       ├── package.json
+│   │       └── src
+│   │           └── main.js
+│   ├── helpers
+│   │   ├── appwrite.js
+│   │   ├── encryptPassword.js
+│   │   └── generatePassword.js
+│   ├── invoiceCollection.js
+│   └── setup.js
+├── appwrite-init.js
+├── babel.config.js
+├── config
+│   ├── environments
+│   │   ├── development.js
+│   │   ├── production.js
+│   │   └── test.js
+│   ├── index.js
+│   ├── jest
+│   │   ├── jest.config.js
+│   │   └── jest.setup.js
+│   └── playwright
+│       ├── global.setup.js
+│       └── playwright.config.js
+├── coverage
+│   ├── clover.xml
+│   ├── coverage-final.json
+│   ├── lcov-report
+│   │   ├── base.css
+│   │   ├── block-navigation.js
+│   │   ├── favicon.png
+│   │   ├── index.html
+│   │   ├── prettify.css
+│   │   ├── prettify.js
+│   │   ├── sort-arrow-sprite.png
+│   │   └── sorter.js
+│   └── lcov.info
+├── custom-template
+│   ├── README.md
+│   ├── publish.js
+│   ├── static
+│   │   ├── fonts
+│   │   │   ├── OpenSans-Bold-webfont.eot
+│   │   │   ├── OpenSans-Bold-webfont.svg
+│   │   │   ├── OpenSans-Bold-webfont.woff
+│   │   │   ├── OpenSans-BoldItalic-webfont.eot
+│   │   │   ├── OpenSans-BoldItalic-webfont.svg
+│   │   │   ├── OpenSans-BoldItalic-webfont.woff
+│   │   │   ├── OpenSans-Italic-webfont.eot
+│   │   │   ├── OpenSans-Italic-webfont.svg
+│   │   │   ├── OpenSans-Italic-webfont.woff
+│   │   │   ├── OpenSans-Light-webfont.eot
+│   │   │   ├── OpenSans-Light-webfont.svg
+│   │   │   ├── OpenSans-Light-webfont.woff
+│   │   │   ├── OpenSans-LightItalic-webfont.eot
+│   │   │   ├── OpenSans-LightItalic-webfont.svg
+│   │   │   ├── OpenSans-LightItalic-webfont.woff
+│   │   │   ├── OpenSans-Regular-webfont.eot
+│   │   │   ├── OpenSans-Regular-webfont.svg
+│   │   │   └── OpenSans-Regular-webfont.woff
+│   │   ├── scripts
+│   │   │   ├── linenumber.js
+│   │   │   └── prettify
+│   │   │       ├── Apache-License-2.0.txt
+│   │   │       ├── lang-css.js
+│   │   │       └── prettify.js
+│   │   └── styles
+│   │       ├── jsdoc-default.css
+│   │       ├── prettify-jsdoc.css
+│   │       └── prettify-tomorrow.css
+│   └── tmpl
+│       ├── augments.tmpl
+│       ├── container.tmpl
+│       ├── details.tmpl
+│       ├── example.tmpl
+│       ├── examples.tmpl
+│       ├── exceptions.tmpl
+│       ├── layout.tmpl
+│       ├── mainpage.tmpl
+│       ├── members.tmpl
+│       ├── method.tmpl
+│       ├── modifies.tmpl
+│       ├── params.tmpl
+│       ├── properties.tmpl
+│       ├── returns.tmpl
+│       ├── source.tmpl
+│       ├── tutorial.tmpl
+│       └── type.tmpl
+├── defaults
+│   ├── categories.json
+│   └── ledgers.json
+├── docs
+│   ├── AppwriteService.html
+│   ├── appwrite_helpers_appwrite.js.html
+│   ├── appwrite_helpers_encryptPassword.js.html
+│   ├── appwrite_setup.js.html
+│   ├── fonts
+│   │   ├── OpenSans-Bold-webfont.eot
+│   │   ├── OpenSans-Bold-webfont.svg
+│   │   ├── OpenSans-Bold-webfont.woff
+│   │   ├── OpenSans-BoldItalic-webfont.eot
+│   │   ├── OpenSans-BoldItalic-webfont.svg
+│   │   ├── OpenSans-BoldItalic-webfont.woff
+│   │   ├── OpenSans-Italic-webfont.eot
+│   │   ├── OpenSans-Italic-webfont.svg
+│   │   ├── OpenSans-Italic-webfont.woff
+│   │   ├── OpenSans-Light-webfont.eot
+│   │   ├── OpenSans-Light-webfont.svg
+│   │   ├── OpenSans-Light-webfont.woff
+│   │   ├── OpenSans-LightItalic-webfont.eot
+│   │   ├── OpenSans-LightItalic-webfont.svg
+│   │   ├── OpenSans-LightItalic-webfont.woff
+│   │   ├── OpenSans-Regular-webfont.eot
+│   │   ├── OpenSans-Regular-webfont.svg
+│   │   └── OpenSans-Regular-webfont.woff
+│   ├── global.html
+│   ├── helpers_appwrite.js.html
+│   ├── home.md
+│   ├── index.html
+│   ├── module-appwrite.html
+│   ├── module-setup.html
+│   ├── scripts
+│   │   ├── linenumber.js
+│   │   └── prettify
+│   │       ├── Apache-License-2.0.txt
+│   │       ├── lang-css.js
+│   │       └── prettify.js
+│   ├── setup.js.html
+│   ├── sidebar-improvements.md
+│   ├── sidebar-performance.md
+│   ├── sidebar-structure.md
+│   ├── src_services_appwrite_index.js.html
+│   ├── styles
+│   │   ├── jsdoc-default.css
+│   │   ├── prettify-jsdoc.css
+│   │   └── prettify-tomorrow.css
+│   └── tailwind.config.js.html
+├── index.html
+├── jest.config.js
+├── jsdoc.json
+├── package.json
+├── playwright.config.js
+├── project-structure.txt
+├── public
+│   ├── Colunm.png copy.png
+│   ├── Colunm.png.png
+│   ├── favicon.ico
+│   ├── logo.png
+│   ├── logo192.png
+│   ├── logo512.png
+│   ├── manifest.json
+│   ├── pdf.worker.min.js
+│   └── robots.txt
+├── src
+│   ├── Layouts
+│   │   ├── common
+│   │   │   └── Overlay.jsx
+│   │   ├── components
+│   │   │   ├── NavigationLink.jsx
+│   │   │   ├── auth
+│   │   │   │   └── AuthLayout.jsx
+│   │   │   ├── contentViewArea
+│   │   │   │   └── ContentViewArea.jsx
+│   │   │   ├── footer
+│   │   │   │   └── Footer.jsx
+│   │   │   ├── header
+│   │   │   │   └── Header.jsx
+│   │   │   ├── home
+│   │   │   │   └── HomeLayout.jsx
+│   │   │   ├── index.js
+│   │   │   ├── mobileNav
+│   │   │   │   └── MobileNav.jsx
+│   │   │   ├── publicnav
+│   │   │   │   └── PublicNav.jsx
+│   │   │   ├── settings
+│   │   │   │   └── Settings.jsx
+│   │   │   ├── sidebar
+│   │   │   │   ├── CollapsedSubMenu.jsx
+│   │   │   │   ├── MenuItem.jsx
+│   │   │   │   ├── MobileHeader.jsx
+│   │   │   │   ├── SideBar.jsx
+│   │   │   │   ├── SidebarFooter.jsx
+│   │   │   │   ├── SidebarHeader.jsx
+│   │   │   │   ├── SidebarNavigation.jsx
+│   │   │   │   ├── SubMenu.jsx
+│   │   │   │   ├── hooks
+│   │   │   │   │   ├── useNavigationData.js
+│   │   │   │   │   ├── useSidebarNavigation.js
+│   │   │   │   │   └── useSidebarState.js
+│   │   │   │   └── index.js
+│   │   │   └── wrappers
+│   │   │       └── ContentViewArea.jsx
+│   │   ├── index.js
+│   │   └── main
+│   │       └── Main.jsx
+│   ├── assets
+│   │   └── fonts
+│   │       ├── archivo
+│   │       │   ├── Archivo-Bold.ttf
+│   │       │   ├── Archivo-BoldItalic.ttf
+│   │       │   ├── Archivo-ExtraBold.ttf
+│   │       │   ├── Archivo-ExtraBoldItalic.ttf
+│   │       │   ├── Archivo-ExtraLight.ttf
+│   │       │   ├── Archivo-ExtraLightItalic.ttf
+│   │       │   ├── Archivo-Italic.ttf
+│   │       │   ├── Archivo-Light.ttf
+│   │       │   ├── Archivo-LightItalic.ttf
+│   │       │   ├── Archivo-Medium.ttf
+│   │       │   ├── Archivo-MediumItalic.ttf
+│   │       │   ├── Archivo-Regular.ttf
+│   │       │   ├── Archivo-SemiBold.ttf
+│   │       │   ├── Archivo-SemiBoldItalic.ttf
+│   │       │   ├── Archivo-Thin.ttf
+│   │       │   └── Archivo-ThinItalic.ttf
+│   │       └── satoshi
+│   │           ├── Satoshi-Black.ttf
+│   │           ├── Satoshi-BlackItalic.ttf
+│   │           ├── Satoshi-Bold.ttf
+│   │           ├── Satoshi-BoldItalic.ttf
+│   │           ├── Satoshi-Italic.ttf
+│   │           ├── Satoshi-Light.ttf
+│   │           ├── Satoshi-LightItalic.ttf
+│   │           ├── Satoshi-Medium.ttf
+│   │           ├── Satoshi-MediumItalic.ttf
+│   │           └── Satoshi-Regular.ttf
+│   ├── components
+│   │   ├── Forms
+│   │   │   └── TransactionForm.jsx
+│   │   ├── Home
+│   │   │   └── IconWrapper.jsx
+│   │   ├── Modals
+│   │   │   ├── CreateCategory.jsx
+│   │   │   ├── CreateParty.jsx
+│   │   │   ├── CreateTransaction.jsx
+│   │   │   ├── DeleteCategoryModal.jsx
+│   │   │   ├── EditCategory.jsx
+│   │   │   ├── EditInvoiceStatus.jsx
+│   │   │   ├── EditParty.jsx
+│   │   │   ├── PartyDetails.jsx
+│   │   │   ├── TransactionDetails.jsx
+│   │   │   └── index.js
+│   │   ├── base
+│   │   │   ├── Button
+│   │   │   │   ├── index.jsx
+│   │   │   │   ├── theme.js
+│   │   │   │   └── variants
+│   │   │   │       ├── IconButton.jsx
+│   │   │   │       ├── LinkButton.jsx
+│   │   │   │       └── SubmitButton.jsx
+│   │   │   └── Spinner
+│   │   │       ├── __mocks__
+│   │   │       │   └── spinnerMocks.js
+│   │   │       ├── constants.js
+│   │   │       ├── context
+│   │   │       ├── index.jsx
+│   │   │       ├── tests
+│   │   │       │   └── unit
+│   │   │       └── variants
+│   │   │           ├── CircularSpinner.jsx
+│   │   │           ├── DefaultSpinner.jsx
+│   │   │           ├── DotsSpinner.jsx
+│   │   │           ├── PulseSpinner.jsx
+│   │   │           └── index.js
+│   │   ├── cards
+│   │   │   ├── Instruction.jsx
+│   │   │   └── index.js
+│   │   └── common
+│   │       ├── Authorization
+│   │       │   └── Authorization.jsx
+│   │       ├── EmptyState.jsx
+│   │       ├── Logos
+│   │       │   ├── Logo.jsx
+│   │       │   ├── LogoCondensed.jsx
+│   │       │   └── index.js
+│   │       ├── forms
+│   │       │   ├── AsyncSelect.jsx
+│   │       │   ├── Button.jsx
+│   │       │   ├── CategorySelect.jsx
+│   │       │   ├── CommonSelect.jsx
+│   │       │   ├── ContactSelect.jsx
+│   │       │   ├── CurrencySelect.jsx
+│   │       │   ├── CustomSelect.jsx
+│   │       │   ├── FormikFields.jsx
+│   │       │   ├── Input.jsx
+│   │       │   ├── InvoiceCurrencySelect.jsx
+│   │       │   ├── MultiSelect.jsx
+│   │       │   ├── PartySelect.jsx
+│   │       │   ├── TextArea.jsx
+│   │       │   ├── fields
+│   │       │   │   ├── DisplayField.jsx
+│   │       │   │   ├── SelectField.jsx
+│   │       │   │   ├── TextAreaField.jsx
+│   │       │   │   ├── TextField.jsx
+│   │       │   │   └── index.js
+│   │       │   ├── formik
+│   │       │   │   ├── CalculatedField.jsx
+│   │       │   │   ├── CalculatedInput.jsx
+│   │       │   │   ├── SelectField.jsx
+│   │       │   │   ├── TextAreaField.jsx
+│   │       │   │   ├── TextField.jsx
+│   │       │   │   └── index.js
+│   │       │   ├── index.js
+│   │       │   ├── selectComponents.jsx
+│   │       │   ├── selectStyles.js
+│   │       │   └── styles
+│   │       │       └── fieldStyles.js
+│   │       ├── icons
+│   │       │   ├── Book.jsx
+│   │       │   ├── Category.jsx
+│   │       │   ├── CircleX.jsx
+│   │       │   ├── ClipBoard.jsx
+│   │       │   ├── Database.jsx
+│   │       │   ├── Delete.jsx
+│   │       │   ├── Download.jsx
+│   │       │   ├── Edit.jsx
+│   │       │   ├── Facebook.jsx
+│   │       │   ├── FileText.jsx
+│   │       │   ├── FolderPlus.jsx
+│   │       │   ├── Info.jsx
+│   │       │   ├── Instagram.jsx
+│   │       │   ├── LinkedIn.jsx
+│   │       │   ├── List.jsx
+│   │       │   ├── Menu.jsx
+│   │       │   ├── PlusSquare.jsx
+│   │       │   ├── Twitter.jsx
+│   │       │   ├── UserPlus.jsx
+│   │       │   ├── Warning.jsx
+│   │       │   ├── Zap.jsx
+│   │       │   └── index.js
+│   │       ├── loaders
+│   │       │   └── PdfLoader.jsx
+│   │       └── pagination
+│   │           ├── PageSizeSelector.jsx
+│   │           ├── Pagination.jsx
+│   │           ├── components
+│   │           │   ├── PageNumber.jsx
+│   │           │   └── PaginationButton.jsx
+│   │           ├── hooks
+│   │           │   └── usePaginationGestures.js
+│   │           ├── index.js
+│   │           └── utils
+│   │               └── paginationUtils.js
+│   ├── config
+│   │   ├── appwrite.config.js
+│   │   ├── database.config.js
+│   │   ├── index.js
+│   │   ├── logger.config.js
+│   │   ├── navigation.config.js
+│   │   └── types.js
+│   ├── constants
+│   │   ├── appwrite.js
+│   │   ├── localStorage.js
+│   │   └── navigation.js
+│   ├── contexts
+│   │   ├── Auth.jsx
+│   │   └── index.js
+│   ├── data
+│   │   ├── constants
+│   │   │   └── pagination.js
+│   │   ├── constants.js
+│   │   └── menu.json
+│   ├── features
+│   │   ├── auth
+│   │   ├── authentication
+│   │   │   ├── components
+│   │   │   │   ├── ForgotPassword
+│   │   │   │   │   └── ForgotPassword.jsx
+│   │   │   │   ├── Login
+│   │   │   │   │   └── Login.jsx
+│   │   │   │   ├── ResetPassword
+│   │   │   │   │   └── ResetPassword.jsx
+│   │   │   │   ├── Signup
+│   │   │   │   │   └── SignUp.jsx
+│   │   │   │   └── index.js
+│   │   │   ├── data
+│   │   │   │   └── policies.js
+│   │   │   ├── index.js
+│   │   │   ├── routes
+│   │   │   │   └── index.jsx
+│   │   │   └── utils
+│   │   │       ├── delay.js
+│   │   │       └── validator.js
+│   │   ├── balances
+│   │   │   └── services
+│   │   │       ├── account-summary.service.js
+│   │   │       ├── balance-analytics.service.js
+│   │   │       ├── balance-operations.service.js
+│   │   │       ├── balances.service.js
+│   │   │       ├── category-total.service.js
+│   │   │       ├── index.js
+│   │   │       └── monthly-statement.service.js
+│   │   ├── billing
+│   │   │   └── services
+│   │   │       └── billing.service.js
+│   │   ├── categories
+│   │   │   ├── hooks
+│   │   │   │   ├── index.js
+│   │   │   │   ├── useCategories.js
+│   │   │   │   ├── useCategoryData.js
+│   │   │   │   ├── useCategoryFilters.js
+│   │   │   │   ├── useCategoryListItem.js
+│   │   │   │   └── useCategoryView.js
+│   │   │   ├── services
+│   │   │   │   └── category.service.js
+│   │   │   └── utils
+│   │   │       └── url-params.js
+│   │   ├── currencies
+│   │   │   ├── hooks
+│   │   │   │   ├── index.js
+│   │   │   │   ├── useCurrencies.js
+│   │   │   │   ├── useCurrenciesList.js
+│   │   │   │   ├── useCurrencyData.js
+│   │   │   │   ├── useCurrencyFilters.js
+│   │   │   │   ├── useCurrencyListItem.js
+│   │   │   │   └── useCurrencyView.js
+│   │   │   ├── services
+│   │   │   │   └── currency.service.js
+│   │   │   └── utils
+│   │   │       └── url-params.js
+│   │   ├── index.js
+│   │   ├── invoicing
+│   │   │   ├── components
+│   │   │   │   ├── InvoiceActions.jsx
+│   │   │   │   ├── InvoiceContent.jsx
+│   │   │   │   ├── InvoiceEmptyState.jsx
+│   │   │   │   ├── InvoiceFilters.jsx
+│   │   │   │   ├── InvoiceFilters.test.jsx
+│   │   │   │   ├── InvoiceForm
+│   │   │   │   │   ├── BillingInfo.jsx
+│   │   │   │   │   ├── InvoiceDetails.jsx
+│   │   │   │   │   ├── InvoiceHeader.jsx
+│   │   │   │   │   ├── InvoiceItems.jsx
+│   │   │   │   │   ├── InvoiceSummary.jsx
+│   │   │   │   │   ├── NotesAndTerms.jsx
+│   │   │   │   │   └── index.jsx
+│   │   │   │   ├── InvoiceHeader.jsx
+│   │   │   │   ├── InvoiceTable
+│   │   │   │   │   ├── InvoiceListItem.jsx
+│   │   │   │   │   ├── InvoiceTable.jsx
+│   │   │   │   │   ├── InvoiceTableBody.jsx
+│   │   │   │   │   └── InvoiceTableHeader.jsx
+│   │   │   │   ├── InvoicesSkeleton.jsx
+│   │   │   │   ├── LetterheadToggle.jsx
+│   │   │   │   ├── NoInvoicesFound.jsx
+│   │   │   │   ├── PdfContentSection.jsx
+│   │   │   │   ├── PdfError.jsx
+│   │   │   │   ├── PdfViewer.jsx
+│   │   │   │   ├── document
+│   │   │   │   │   └── Document.jsx
+│   │   │   │   ├── forms
+│   │   │   │   │   ├── fields
+│   │   │   │   │   │   ├── SelectField.jsx
+│   │   │   │   │   │   ├── TextField.jsx
+│   │   │   │   │   │   └── index.js
+│   │   │   │   │   └── formik
+│   │   │   │   │       ├── SelectField.jsx
+│   │   │   │   │       ├── TextField.jsx
+│   │   │   │   │       └── index.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── pdf
+│   │   │   │   │   ├── PDFDoc.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   └── table
+│   │   │   │       └── InvoiceRow.jsx
+│   │   │   ├── hooks
+│   │   │   │   ├── index.js
+│   │   │   │   ├── useCreateInvoice.js
+│   │   │   │   ├── useInvoiceCalculations.js
+│   │   │   │   ├── useInvoiceData.js
+│   │   │   │   ├── useInvoiceFilters.js
+│   │   │   │   ├── useInvoiceFilters.test.jsx
+│   │   │   │   ├── useInvoiceListItem.js
+│   │   │   │   ├── useInvoiceView.js
+│   │   │   │   ├── useInvoices.js
+│   │   │   │   └── usePdfRenderer.js
+│   │   │   ├── index.js
+│   │   │   ├── pages
+│   │   │   │   ├── EditInvoice.jsx
+│   │   │   │   ├── Invoice.jsx
+│   │   │   │   ├── Invoices.jsx
+│   │   │   │   ├── NewInvoice.jsx
+│   │   │   │   └── index.js
+│   │   │   ├── routes
+│   │   │   │   ├── actions.jsx
+│   │   │   │   ├── index.jsx
+│   │   │   │   ├── loaders.jsx
+│   │   │   │   ├── protected.jsx
+│   │   │   │   └── public.jsx
+│   │   │   ├── services
+│   │   │   │   └── invoice.service.js
+│   │   │   ├── styles
+│   │   │   │   ├── fieldStyles.js
+│   │   │   │   └── pdf-viewer.css
+│   │   │   └── utils
+│   │   │       ├── __tests__
+│   │   │       ├── formatInvoiceData.js
+│   │   │       ├── normalizeInvoiceData.js
+│   │   │       ├── pdfWorkerSetup.js
+│   │   │       └── url-params.js
+│   │   ├── items
+│   │   │   ├── components
+│   │   │   └── services
+│   │   │       └── item.service.js
+│   │   ├── organisations
+│   │   │   ├── hooks
+│   │   │   │   ├── index.js
+│   │   │   │   ├── useOrganisationData.js
+│   │   │   │   ├── useOrganisationFilters.js
+│   │   │   │   ├── useOrganisationListItem.js
+│   │   │   │   ├── useOrganisationView.js
+│   │   │   │   └── useOrganisations.js
+│   │   │   ├── services
+│   │   │   │   └── organisation.service.js
+│   │   │   └── utils
+│   │   │       └── url-params.js
+│   │   ├── parties
+│   │   │   ├── components
+│   │   │   │   └── table
+│   │   │   │       └── PartyRow.jsx
+│   │   │   ├── hooks
+│   │   │   │   ├── index.js
+│   │   │   │   ├── useCreateParty.js
+│   │   │   │   ├── useParties.js
+│   │   │   │   ├── usePartyData.js
+│   │   │   │   ├── usePartyFilters.js
+│   │   │   │   ├── usePartyListItem.js
+│   │   │   │   └── usePartyView.js
+│   │   │   └── services
+│   │   ├── profile
+│   │   ├── receipts
+│   │   │   ├── components
+│   │   │   ├── pages
+│   │   │   └── routes
+│   │   │       └── index.jsx
+│   │   ├── settings
+│   │   │   ├── components
+│   │   │   │   ├── index.js
+│   │   │   │   └── table
+│   │   │   │       └── CategoryRow.jsx
+│   │   │   ├── hooks
+│   │   │   │   ├── index.js
+│   │   │   │   ├── useCategories.js
+│   │   │   │   └── useParties.js
+│   │   │   └── routes
+│   │   │       ├── actions.jsx
+│   │   │       ├── index.jsx
+│   │   │       ├── loaders.jsx
+│   │   │       ├── protected.jsx
+│   │   │       └── public.jsx
+│   │   ├── sharing
+│   │   │   ├── components
+│   │   │   │   ├── distribute
+│   │   │   │   │   ├── Distribute.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── howto
+│   │   │   │   │   ├── HowTo.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── index.js
+│   │   │   │   └── ui
+│   │   │   │       └── summary
+│   │   │   │           └── Summary.jsx
+│   │   │   ├── index.js
+│   │   │   └── routes
+│   │   │       └── index.jsx
+│   │   └── transactions
+│   │       ├── components
+│   │       │   ├── CurrencyDisplay.jsx
+│   │       │   ├── Footer
+│   │       │   │   ├── Footer.jsx
+│   │       │   │   ├── FooterSkeleton.jsx
+│   │       │   │   └── index.js
+│   │       │   ├── MonthlySummary
+│   │       │   │   ├── MonthlySummary.jsx
+│   │       │   │   ├── MonthlySummarySkeleton.jsx
+│   │       │   │   └── index.js
+│   │       │   ├── TransactionCurrencyDisplay.jsx
+│   │       │   ├── TransactionFilters.jsx
+│   │       │   ├── TransactionList.jsx
+│   │       │   ├── TransactionsEmptyState.jsx
+│   │       │   ├── TransactionsMain
+│   │       │   │   ├── TransactionsMain.jsx
+│   │       │   │   ├── TransactionsMainSkeleton.jsx
+│   │       │   │   └── index.js
+│   │       │   ├── forms
+│   │       │   │   ├── fields
+│   │       │   │   │   ├── DisplayField.jsx
+│   │       │   │   │   ├── SelectField.jsx
+│   │       │   │   │   ├── TextAreaField.jsx
+│   │       │   │   │   ├── TextField.jsx
+│   │       │   │   │   └── index.js
+│   │       │   │   └── formik
+│   │       │   │       ├── CalculatedField.jsx
+│   │       │   │       ├── CalculatedInput.jsx
+│   │       │   │       ├── SelectField.jsx
+│   │       │   │       ├── TextAreaField.jsx
+│   │       │   │       ├── TextField.jsx
+│   │       │   │       └── index.js
+│   │       │   ├── index.js
+│   │       │   ├── modals
+│   │       │   │   └── EditTransaction.jsx
+│   │       │   └── table
+│   │       │       └── TransactionRow.jsx
+│   │       ├── hooks
+│   │       │   ├── index.js
+│   │       │   ├── useCreateTransaction.js
+│   │       │   ├── useTransactionData.js
+│   │       │   ├── useTransactionFilters.js
+│   │       │   ├── useTransactionListItem.js
+│   │       │   ├── useTransactionSubmission.js
+│   │       │   ├── useTransactionView.js
+│   │       │   └── useTransactions.js
+│   │       ├── routes
+│   │       │   ├── actions.jsx
+│   │       │   ├── index.jsx
+│   │       │   ├── loaders.jsx
+│   │       │   └── protected.jsx
+│   │       ├── services
+│   │       │   └── transaction.service.js
+│   │       ├── styles
+│   │       │   └── fieldStyles.js
+│   │       └── utils
+│   │           └── url-params.js
+│   ├── hooks
+│   │   ├── index.js
+│   │   ├── useAuth.jsx
+│   │   ├── useAuthorization.jsx
+│   │   ├── useMediaQuery.js
+│   │   ├── useNavigationLoadingState.jsx
+│   │   ├── usePagination.js
+│   │   ├── useRealtime.js
+│   │   └── useUrlParams.js
+│   ├── index.css
+│   ├── index.jsx
+│   ├── lib
+│   │   ├── appwrite
+│   │   │   ├── base-service.js
+│   │   │   ├── client.js
+│   │   │   ├── config.js
+│   │   │   └── queries.js
+│   │   ├── appwrite.js
+│   │   ├── services
+│   │   │   └── category.service.js
+│   │   ├── storage
+│   │   │   └── formStateManager.js
+│   │   └── templates
+│   │       ├── email
+│   │       │   ├── index.js
+│   │       │   └── welcomeEmail.js
+│   │       └── other
+│   ├── pages
+│   │   ├── Invoices
+│   │   │   ├── EditInvoice.jsx
+│   │   │   ├── ExternalInvoice.jsx
+│   │   │   ├── Invoices.jsx
+│   │   │   ├── NewInvoice.jsx
+│   │   │   ├── components
+│   │   │   └── hooks
+│   │   ├── Transactions
+│   │   │   ├── Transaction.jsx
+│   │   │   └── Transactions.jsx
+│   │   ├── home
+│   │   │   └── Home.jsx
+│   │   ├── index.js
+│   │   ├── receipts
+│   │   │   ├── EditReceipt.jsx
+│   │   │   ├── NewReceipt.jsx
+│   │   │   └── Receipts.jsx
+│   │   └── settings
+│   │       ├── BillingSettings.jsx
+│   │       ├── BusinessSettings.jsx
+│   │       ├── CategorySettings.jsx
+│   │       ├── CurrencySettings.jsx
+│   │       ├── PartiesSettings.jsx
+│   │       ├── ProfileSettings.jsx
+│   │       └── Settings.jsx
+│   ├── providers
+│   │   ├── auth
+│   │   │   └── Auth.jsx
+│   │   └── index.js
+│   ├── reportWebVitals.js
+│   ├── routes
+│   │   ├── components
+│   │   │   ├── index.js
+│   │   │   ├── notFound
+│   │   │   │   ├── NotFound.jsx
+│   │   │   │   └── index.js
+│   │   │   └── privateRoute
+│   │   │       ├── PrivateRoute.jsx
+│   │   │       └── index.js
+│   │   ├── index.jsx
+│   │   ├── protected.jsx
+│   │   └── public.jsx
+│   ├── services
+│   │   ├── appwrite.service.js
+│   │   ├── balances.service.js
+│   │   ├── base
+│   │   │   ├── appwrite.service.js
+│   │   │   └── base.service.js
+│   │   ├── categories.service.js
+│   │   ├── currency.prefs.service.js
+│   │   ├── index.js
+│   │   ├── invoice.service.js
+│   │   ├── receipts.service.js
+│   │   ├── service.factory.js
+│   │   └── sharesInvoice.service.js
+│   ├── setupTests.js
+│   ├── types
+│   │   └── config
+│   │       └── appwrite
+│   └── utils
+│       ├── add.thousand.separators.js
+│       ├── checkUser.js
+│       ├── cn.js
+│       ├── currency.formatter.js
+│       ├── format.currency.js
+│       ├── getBase64.js
+│       ├── getPx.js
+│       ├── getValidNumber.js
+│       ├── logger.js
+│       ├── unique.date.id.js
+│       └── validators.js
+├── tailwind.config.js
+├── tests
+│   ├── e2e
+│   ├── integration
+│   └── unit
+│       └── services
+│           └── base
+├── vercel.json
+├── vite-env.d.ts
+├── vite.config.js
+└── yarn.lock
+
+201 directories, 563 files

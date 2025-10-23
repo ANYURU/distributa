@@ -35,3 +35,5 @@ appwrite.json
 .qodo
 
 /src/components/common/Sidebar/
+/defaults
+
